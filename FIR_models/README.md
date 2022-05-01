@@ -2,7 +2,7 @@
 The FIR model was used to model stimulus-evoked component of the BOLD timeseries. The fMRIPrep minimally preprocessed timeseries went through the following steps to extrat the stimulus-free, residual activities. 
 ## pl_post_fmriprep.py
 Spatial smoothing and high-pass filtering: 5.0 mm FWHM Gaussian kernel and high-pass filtered at 0.01 Hz.
-## FIR_glm.py (implemented using Nipypel; see the flowchart below)
+## FIR_glm.py (implemented using Nipype; see the flowchart below)
 1. Creating a shared (i.e., group-level) gray matter voxel masks 
 2. GLM1: Nuisance regressors. Removing six motion parameters and the mean signals from CSF and WM. 
 3. Concatenate and Zscore: Concatenate all functional runs and zscore each volume using the mean and SD of the IBI timepoints. 
