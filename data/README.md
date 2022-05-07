@@ -1,11 +1,10 @@
-# To reproduce results in Figure 2
-## 1. Run face_voxel_selection_cv.py 
-Run this script for Perceive vs. Retrieve and Scramble vs. Retrieve comparisons, with different participants being the left-out-subject. The script takes 6 inputs: For more details please see my tutorial on FCMA (https://github.com/peetal/FCMA_demo), or checkout the BrainIAK website (https://brainiak.org/)
-- the directory of the data, in this case would be the directory pointing to the 24 residual activity files (data/sub-xx/FIR_residual); 
-- the suffix of the residual activity files, in this case would be "res1956.nii.gz";
-- the directory of the shared gray matter mask file; 
-- the directory of the epoch file; 
-- the left-out-subject ID;
-- the file output directory
-This script outputs a NIFTI file of the same dimension of the residual activity file, named "fc_noXX_result_score.nii.gz". The value of each voxel indicating its ultility of differentiating the respective task condition comparison when using all the data except the XX participant. 
-## 2. Run
+# Processed data
+Due to the size of th processed data, we uploaded both stimulus-evoked and residual timeseries to Open Science Framework: https://osf.io/yfwc7/
+## Before_FIR 
+This folder included the stimulus-evoked timeseries for each pariticiapnt. Note that all functional run were concatenated and z-scored, spatially smoothed and high-pass filter, and regressed out all confounds variables (sixe motion parameters and the mean signals from white matter and CSF).
+## FIR_res
+This filder included the residual timeseires for each participant. These timeseires were obtained by applying a finite impulse response (FIR) model to regress out the stimulus-evoked component from the stimulus-evoked timeseires. 
+## all_sub_universal_GM_mask.nii.gz
+This is the shared gray matter mask across all participants. 
+## Epoch file 
+Note that the order of task conditions were randomized across participants, meaning that the concatenated timeseries were not following a consistent order. Thus we included 3 epoch npy to tell the FCMA scripts which volumes of a participant is which condition.
