@@ -1,4 +1,4 @@
-    #  Copyright 2016 Intel Corporation
+#  Copyright 2016 Intel Corporation
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import numpy as np
 from sklearn import model_selection
 from mpi4py import MPI
 import os
+import pandas as pd 
 
 
 format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -35,10 +36,12 @@ data_dir = sys.argv[1]
 suffix = sys.argv[2]
 top_n_mask_file = sys.argv[3] # This is not the whole brain mask! This is the voxel selection mask
 epoch_file = sys.argv[4]
-left_out_subj = sys.argv[5]
-results_path = sys.argv[6]
-if len(sys.argv)==8:
-    second_mask = sys.argv[7]  # Do you want to supply a second mask (for extrinsic analysis)
+epoch_file_test = sys.argv[5]
+left_out_subj = sys.argv[6]
+results_path = sys.argv[7]
+cond = sys.argv[8]
+if len(sys.argv)==10:
+    second_mask = sys.argv[9]  # Do you want to supply a second mask (for extrinsic analysis)
 else:
     second_mask = "None"
     
@@ -46,7 +49,8 @@ if not os.path.exists(results_path):
     os.makedirs(results_path)
 
 # Where do you want to output the classification results?
-output_file = results_path + '/classify_result_decision_function_output.txt'
+output_file = results_path + '/classify_result.txt'
+output_csv = results_path + f"/sub{left_out_subj}_classify_result.csv"
 
 # Do you want to compute this in an easily understood way (0) or a memory efficient way (1)?
 is_memory_efficient = 1
@@ -67,9 +71,11 @@ if __name__ == '__main__':
         )
     
     # Load in the volumes, mask and labels
-    images = io.load_images_from_dir(data_dir, suffix=suffix)
+    images1 = io.load_images_from_dir(data_dir, suffix=suffix)
+    images2 = io.load_images_from_dir(data_dir, suffix=suffix)
     top_n_mask = io.load_boolean_mask(top_n_mask_file)
     epoch_list = io.load_labels(epoch_file)
+    epoch_list_test = io.load_labels(epoch_file_test)
 
     # Parse the epoch data for useful dimensions
     #epochs_per_subj = epoch_list[0].shape[1] # comment out b/c im doing 2 out 3 ways classification, 
@@ -78,7 +84,8 @@ if __name__ == '__main__':
     num_subjs = len(epoch_list)
     
     # Prepare the data
-    int_data, _, labels = prepare_fcma_data(images, epoch_list, top_n_mask)
+    int_data, _, labels = prepare_fcma_data(images1, epoch_list, top_n_mask)
+    int_data_test, _, labels_test = prepare_fcma_data(images2, epoch_list_test, top_n_mask)
     
     # What indexes pick out the left out participant?
     start_idx = int(int(left_out_subj) * epochs_per_subj)
@@ -90,11 +97,11 @@ if __name__ == '__main__':
     
     # Pull out the data
     int_data_training = [int_data[i] for i in training_idx]
-    int_data_testing = [int_data[i] for i in testing_idx]
+    int_data_testing = [int_data_test[i] for i in testing_idx]
     
     # Pull out the labels
-    labels_training = [labels[i] for i in training_idx]
-    labels_testing = [labels[i] for i in testing_idx]
+    labels_training = [labels[i] for i in training_idx]  
+    labels_testing = [labels_test[i] for i in testing_idx]
     
     # Prepare the data to be processed efficiently (albeit in a less easy to follow way)
     if is_memory_efficient == 1:
@@ -154,28 +161,33 @@ if __name__ == '__main__':
 
     # Report results on the first rank core
     if MPI.COMM_WORLD.Get_rank()==0:
-        print('--RESULTS--')
-        print(clf.decision_function())
-        print(clf.predict())
+#         print('--RESULTS--')
+#         print(clf.decision_function())
+#         print(clf.predict())
         
         # How often does the prediction match the target
         num_correct = (np.asanyarray(predict) == np.asanyarray(labels_testing)).sum()
-        confidence = clf.decision_function()
         
-        # Print the CV accuracy
-        if is_memory_efficient == 0:
-            cv_accuracy = (np.asanyarray(cv_prediction) == np.asanyarray(labels_training)).sum() / len(labels_training)
-            print('CV accuracy: %0.5f' % (cv_accuracy))
+#         # Print the CV accuracy
+#         if is_memory_efficient == 0:
+#             cv_accuracy = (np.asanyarray(cv_prediction) == np.asanyarray(labels_training)).sum() / len(labels_training)
+#             print('CV accuracy: %0.5f' % (cv_accuracy))
         
-        intrinsic_vs_extrinsic = ['intrinsic', 'extrinsic']
+#         intrinsic_vs_extrinsic = ['intrinsic', 'extrinsic']
         
-        # Report accuracy
-        logger.info(
-            'When leaving subject %d out for testing using the %s mask for an %s correlation, the accuracy is %d / %d = %.2f' %
-            (int(left_out_subj), top_n_mask_file, intrinsic_vs_extrinsic[int(is_extrinsic)], num_correct, epochs_per_subj, num_correct / epochs_per_subj)
-        )
+#         # Report accuracy
+#         logger.info(
+#             'When leaving subject %d out for testing using the %s mask for an %s correlation, the accuracy is %d / %d = %.2f' %
+#             (int(left_out_subj), top_n_mask_file, intrinsic_vs_extrinsic[int(is_extrinsic)], num_correct, epochs_per_subj, num_correct / epochs_per_subj)
+#         )
         
-        # Append this accuracy on to a score sheet
-        with open(output_file, 'a') as fp:
-            fp.write(top_n_mask_file + ', ' + str(intrinsic_vs_extrinsic[int(is_extrinsic)]) + ': ' + str(num_correct / epochs_per_subj) + '\n') 
-            fp.write(str(confidence) + '\n')
+#         # Append this accuracy on to a score sheet
+#         with open(output_file, 'a') as fp:
+#             fp.write(top_n_mask_file + ', ' + str(intrinsic_vs_extrinsic[int(is_extrinsic)]) + ': ' + str(num_correct / epochs_per_subj) + '\n')    
+        
+        
+        df = pd.DataFrame({"sub_id": np.repeat(int(left_out_subj), 32).tolist(), 
+                            "acc": np.repeat(round(num_correct / epochs_per_subj,2), 32).tolist(), 
+                            "conf": clf.decision_function().tolist(),
+                            "cond": np.repeat(str(cond), 32).tolist()})
+        df.to_csv(output_csv, index = False)
