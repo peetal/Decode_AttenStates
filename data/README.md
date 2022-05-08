@@ -1,5 +1,5 @@
 # Processed data
-Due to the size of th processed data, we uploaded both stimulus-evoked and residual timeseries to Open Science Framework: https://osf.io/yfwc7/
+Due to the size of the processed data, we uploaded both stimulus-evoked and residual timeseries to Open Science Framework: https://osf.io/yfwc7/
 ### Before_FIR 
 This folder included the stimulus-evoked timeseries for each pariticiapnt. Note that all functional run were concatenated and z-scored, spatially smoothed and high-pass filter, and regressed out all confounds variables (sixe motion parameters and the mean signals from white matter and CSF).
 ### FIR_res
