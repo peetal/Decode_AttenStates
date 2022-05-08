@@ -1,2 +1,5 @@
 .DS_Store
 .Rhistory
+.*_fullts.npy
+data/cluster_evoked_activity
+data/cluster_residual_activity
