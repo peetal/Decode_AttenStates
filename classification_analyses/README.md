@@ -18,7 +18,7 @@ This bash script selects the top performing voxels in terms of their composite s
 - the size of the voxel mask;
 - the output directory
 ## 4. run fcma_classify.py
-Run this script for each task condition comparison, with different particiapnts being the left-out-subject. The script takes 8 inputs: 
+Run this script for each task condition comparison, with different participants being the left-out-subject. The script takes 8 inputs: 
 - the directory of the data, in this case would be the directory pointing to the 24 residual activity files (data/FIR_residual); 
 - the suffix of the residual activity files, in this case would be "res1956.nii.gz";
 - the top_k_voxel_mask, in this case would be the output files of the make_top_voxel_mask.sh; 
@@ -26,7 +26,18 @@ Run this script for each task condition comparison, with different particiapnts 
 - the left-out-subject ID;
 - the file output directory;
 - idx: unrelated for the current task (leave it being 0);
-- cond: a string indicating the current task condition comparison;
+- a string indicating the current task condition comparison;
 
-This script outputs a csv file with the columns being 1) left-out-subject 2) classification accuracy (i.e., correct_num/32) 3) decision function output for each epoch (used later for computing AUC) 4) task condition comparison. 
-After stacking all 
+This script outputs a csv file with the columns being 1) left-out-subject 2) classification accuracy (i.e., correct_num/32) 3) decision function output for each epoch (used later for computing AUC) 4) task condition comparison. Stacking all output CSVs leads to clf_results/bg_fcma_clf_conf.csv.
+## 5. run mvpa_classify.py
+Run this script for each task condition comparison, with different participants being the left-out-subject. This script does very similar things as the fcma_classify.py script, except that it trains and tests classifiers based on stimulus-evoked activity patterns instead of background FC patterns. The script taskes 7 inputs: 
+- the directory of the data, in this case would be the directory pointing to the 24 stimulus-evoked time series (data/before_FIR); 
+- the suffix of the stimulus-evoked time series, in this case would be "CONCAT.nii.gz";
+- the top_k_voxel_mask, in this case would be the output files of the make_top_voxel_mask.sh;
+- the directory of the epoch file, in this case there are 3 task condition comparisons, thus 3 epoch files (data/Epoch_file);
+- the left-out-subject ID;
+- a string indicating the current task condition comparison;
+
+The output of this script resembles those of the fcma_classify.py script. Stacking all output CSVs leads to clf_results/evoked_mvpa_clf_conf.csv.
+## 6. run compute_AUC.py
+This script computes the area under the receiver operating curve (AUC) for each model given mask size (e.g., k = 3000), condition (e.g., ret vs. per), and neural measures (i.e., background FC, stimulus-evoked MVPA, and hybrid). Thus script outputs two files: clf_results/fcma_regular_AUC_full.csv and clf_results/fcma_mvpa_hybrid_3000AUC.csv, which could be used to reproduce Figure 2a and 2b in the manuscript. 
