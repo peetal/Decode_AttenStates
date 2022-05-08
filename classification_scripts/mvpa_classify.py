@@ -16,6 +16,7 @@ from sklearn import model_selection
 from mpi4py import MPI
 import os
 from brainiak.image import mask_images
+import pandas as pd 
 
 
 format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -30,8 +31,9 @@ top_n_mask_file = sys.argv[3] # This is not the whole brain mask! This is the vo
 epoch_file = sys.argv[4]
 left_out_subj = sys.argv[5]
 results_path = sys.argv[6]
-if len(sys.argv)==8:
-    second_mask = sys.argv[7]  # Do you want to supply a second mask (for extrinsic analysis)
+cond = sys.argv[7]
+if len(sys.argv)==9:
+    second_mask = sys.argv[8]  # Do you want to supply a second mask (for extrinsic analysis)
 else:
     second_mask = "None"
     
@@ -40,6 +42,7 @@ if not os.path.exists(results_path):
 
 # Where do you want to output the classification results?
 output_file = results_path + '/classify_result_decision_making_func.txt'
+output_csv = results_path + f"/sub{left_out_subj}_classify_result.csv"
 
 # Do you want to compute this in an easily understood way (0) or a memory efficient way (1)?
 is_memory_efficient = 1
@@ -103,17 +106,23 @@ if __name__ == '__main__':
 
     # Report results on the first rank core
     if MPI.COMM_WORLD.Get_rank()==0:
-        print('--RESULTS--')
+        # print('--RESULTS--')
         
-        intrinsic_vs_extrinsic = ['intrinsic', 'extrinsic']
+        # intrinsic_vs_extrinsic = ['intrinsic', 'extrinsic']
         
-        # Report accuracy
-        logger.info(
-            'When leaving subject %d out for testing using the %s mask for an %s correlation, the accuracy is %d / %d = %.2f' %
-            (int(left_out_subj), top_n_mask_file, intrinsic_vs_extrinsic[int(is_extrinsic)], corr, epochs_per_subj, score)
-        )
+        # # Report accuracy
+        # logger.info(
+        #     'When leaving subject %d out for testing using the %s mask for an %s correlation, the accuracy is %d / %d = %.2f' %
+        #     (int(left_out_subj), top_n_mask_file, intrinsic_vs_extrinsic[int(is_extrinsic)], corr, epochs_per_subj, score)
+        # )
         
-        # Append this accuracy on to a score sheet
-        with open(output_file, 'a') as fp:
-            fp.write(top_n_mask_file + ', ' + str(intrinsic_vs_extrinsic[int(is_extrinsic)]) + ': ' + str(score) + '\n')  
-            fp.write(top_n_mask_file + ',: ' + str(decision_function) + '\n')
+        # # Append this accuracy on to a score sheet
+        # with open(output_file, 'a') as fp:
+        #     fp.write(top_n_mask_file + ', ' + str(intrinsic_vs_extrinsic[int(is_extrinsic)]) + ': ' + str(score) + '\n')  
+        #     fp.write(top_n_mask_file + ',: ' + str(decision_function) + '\n')
+        df = pd.DataFrame({"sub_id": np.repeat(int(left_out_subj), 32).tolist(), 
+                            "acc": np.repeat(corr, 32).tolist(), 
+                            "conf": decision_function.tolist(),
+                            "cond": np.repeat(str(cond), 32).tolist(),
+                            })
+        df.to_csv(output_csv, index = False)
