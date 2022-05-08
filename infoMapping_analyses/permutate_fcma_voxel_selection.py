@@ -1,3 +1,10 @@
+#  Copyright 2016 Intel Corporation
+"""This script test the model performance using each shuffled epoch file"""
+"""Note that this script does not do LOOCV due to time limits"""
+##
+## Author: Y.Peeta Li; modified based on original scripts from BrainIAK https://github.com/brainiak/brainiak/tree/master/brainiak/fcma
+## Email: peetal@uoregon.edu
+##
 from brainiak.fcma.voxelselector import VoxelSelector
 from brainiak.fcma.preprocessing import prepare_fcma_data
 from brainiak.fcma.preprocessing import RandomType
