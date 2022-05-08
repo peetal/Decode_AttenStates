@@ -41,3 +41,5 @@ Run this script for each task condition comparison, with different participants 
 The output of this script resembles those of the fcma_classify.py script. Stacking all output CSVs leads to clf_results/evoked_mvpa_clf_conf.csv.
 ## 6. run compute_AUC.py
 This script computes the area under the receiver operating curve (AUC) for each model given mask size (e.g., k = 3000), condition (e.g., ret vs. per), and neural measures (i.e., background FC, stimulus-evoked MVPA, and hybrid). Thus script outputs two files: clf_results/fcma_regular_AUC_full.csv and clf_results/fcma_mvpa_hybrid_3000AUC.csv, which could be used to reproduce Figure 2a and 2b in the manuscript. 
+
+<img width="500" alt="image" src="https://user-images.githubusercontent.com/63365201/167278024-051e940d-ba93-47e3-b194-edbd686f5f2a.png">
