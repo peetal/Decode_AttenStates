@@ -29,3 +29,4 @@ Run this script for each task condition comparison, with different particiapnts 
 - cond: a string indicating the current task condition comparison;
 
 This script outputs a csv file with the columns being 1) left-out-subject 2) classification accuracy (i.e., correct_num/32) 3) decision function output for each epoch (used later for computing AUC) 4) task condition comparison. 
+After stacking all 
