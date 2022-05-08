@@ -1,3 +1,3 @@
-# To conduct permutation test and to reproduce results in Figure 3
+# To reproduce results in Figure 3
 
 
