@@ -1,0 +1,48 @@
+## Config file for sample.py project
+title = 'PhantomTest'
+sessionId = 'phantom'
+location = 'LCNI'
+
+# Scan info 
+minExpectedDicomSize = 100000       
+refBoldScanNum = 7                                  # refbold 
+strucScanNum = 0                                    # sturc
+scanNum = [9,10,11]                                      # Functional EPI 
+runNum = [1,2,3]
+numTR_func_run = 160                                # Numer of TR!! NOT SECOND!! 
+subjectName = 'sub_test'                            # This will be part of the folder name, need to be consistent with the scanner input. 
+datestr = '20211026'                                # This will be part of the folder name, need to be consistent with the scanner input. 
+sessionNum = 2                                      # the number of time the participant being scanned
+dicomNamePattern = "001_{SCAN:06d}_{TR:06d}.dcm" 
+roi = ['/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi1_mPFC_size_620_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi2_rIPL_size_519_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi3_rsc_size_400_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi4_lIPS_size_377_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi5_rIPS_size_364_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi6_PCUN_size_308_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi7_lIPL_size_117_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi8_rpfc_size_116_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi9_lpfc_size_116_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi10_pcc_size_107_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi11_rsc_size_103_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi12_sfg_size_82_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi13_lpfc2_size_64_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi14_mtg_size_58_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi15_lIPL_size_52_res-02.nii.gz', 
+       '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline/data/roi/roi16_IT_size_49_res-02.nii.gz']
+
+## Directory 
+imgDir = '/home/rtfmri/Documents/bridge'
+codeDir = '/home/rtfmri/Documents/rt-cloud/projects/realtime_pipeline'  
+
+
+## Plotting info. 
+plotTitle = 'Realtime Plot'
+plotXLabel = 'Sample #'
+plotYLabel = 'Value'
+plotXRangeLow = 0
+plotXRangeHigh = 333
+plotYRangeLow = -1
+plotYRangeHigh = 1
+plotAutoRangeX = false
+plotAutoRangeY = true
